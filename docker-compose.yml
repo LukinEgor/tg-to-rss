@@ -1,0 +1,39 @@
+version: "3.7"
+
+x-app-volumes: &app-volumes
+  - .:/usr/src/app:cached
+  - ~/.bash_history:/root/.bash_history
+
+x-app-environment: &app-environment
+  - POSTGRES_HOST=db
+  - POSTGRES_USER=postgres
+
+services:
+  app:
+    build: .
+    # command: "lein api && lein web && lein repl"
+    command: "lein ring server"
+    volumes: *app-volumes
+    environment: *app-environment
+    ports:
+      - "3000:3000"
+      - "43715:43715"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5432:5432
+
+  # infra:
+  #   build:
+  #     context: ./infra
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./infra:/infra
+
+# volumes:
+#   bundle_cache:
