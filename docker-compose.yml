@@ -11,13 +11,12 @@ x-app-environment: &app-environment
 services:
   app:
     build: .
-    # command: "lein api && lein web && lein repl"
     command: "lein ring server"
     volumes: *app-volumes
     environment: *app-environment
     ports:
       - "3000:3000"
-      - "43715:43715"
+      - "4000:4000"
     depends_on:
       - db
 

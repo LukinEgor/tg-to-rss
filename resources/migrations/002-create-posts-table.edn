@@ -1,2 +1,2 @@
-{:up   ["CREATE TABLE posts (id serial primary key, content text, constraint fk_channel foreign key (id) references channels(id));"]
+{:up   ["CREATE TABLE posts (id serial primary key, content text, channel_id integer, constraint fk_channel foreign key (channel_id) references channels(id));"]
  :down ["DROP TABLE posts;"]}
