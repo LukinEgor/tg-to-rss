@@ -1,10 +1,12 @@
-;; (ns rss.db.mappers.channel)
 (ns rss.db.mappers.channel
-  (require [clojure.java.jdbc :as jdbc])
-  (require [honey.sql :as sql]
-           [honey.sql.helpers :refer :all :as h]
-           [clojure.core :as c])
-  (require [rss.db.config :refer config]))
+  (:require [clojure.java.jdbc :as jdbc])
+  (:require [honey.sql :as sql]
+            [honey.sql.helpers :refer :all :as h]
+            [clojure.core :as c])
+  (:require [rss.db.config :refer [db-spec]]))
+
+
+;; (require '[clojure.java.jdbc :as jdbc])
 
 (defn get-channels-sql []
   (-> (h/select [:*])
