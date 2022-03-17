@@ -1,0 +1,2 @@
+{:up   ["CREATE TABLE channels (id serial primary key, name char(12), description char(20), link char(20), status char(20));"]
+ :down ["DROP TABLE channels;"]}
