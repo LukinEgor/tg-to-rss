@@ -11,6 +11,8 @@
                  [ring/ring-mock "0.4.0"]
                  [ring/ring-json "0.5.1"]
                  [org.clojure/clojurescript "1.10.758"]
+                 [clj-tagsoup/clj-tagsoup "0.3.0" :exclusions [org.clojure/clojure]]
+                 [org.clojure/data.xml "0.0.8"]
                  [reagent "1.1.0"]
                  [environ "1.2.0"]
                  [figwheel-sidecar "0.5.16"]
