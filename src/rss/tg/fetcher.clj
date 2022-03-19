@@ -2,6 +2,7 @@
   (:use pl.danieljanus.tagsoup))
 
 ;; (find-last-post "addmeto")
+;; (find-post-by-id "addmeto" 4789)
 
 (def tg-url "https://t.me")
 (def intro-post-id 0)
@@ -15,6 +16,16 @@
                          (/ started-post-id 2)
                          started-post-id)))
 
+(defn fetch-post-by-id [channel post-id]
+  (->>
+   (str tg-url "/" channel "/" post-id)
+   (parse)
+   (take-headers)
+   (filter twitter-meta-header?)
+   (first)
+   (extract-content)))
+
+; refactoring
 (defn find-last-post-iter [channel intro step guess-id]
   (let [current-post (fetch-post-by-id channel guess-id)
         next-post (fetch-post-by-id channel (+ guess-id 1))
@@ -28,15 +39,6 @@
                               intro
                               (Math/ceil (/ step 2))
                               (next-guess-id guess-id step intro current-post)))))
-
-(defn fetch-post-by-id [channel post-id]
-  (->>
-   (str tg-url "/" channel "/" post-id)
-   (parse)
-   (take-headers)
-   (filter twitter-meta-header?)
-   (first)
-   (extract-content)))
 
 (defn take-headers [html] (nth html 2))
 
