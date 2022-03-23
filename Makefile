@@ -5,3 +5,6 @@ repl:
 
 test:
 	DB_NAME=rss_test lein test
+
+web:
+	lein figwheel
