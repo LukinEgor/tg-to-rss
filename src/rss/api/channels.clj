@@ -1,11 +1,20 @@
 (ns rss.api.channels
   (:require [rss.db.config :refer [db-spec]])
+  (:require [ring.util.response :refer [response]])
   (:require [rss.db.mappers.channel :as mapper]))
 
-(defn index [request]
-  (mapper/get-channels db-spec))
+(defn index []
+  (->
+   (mapper/get-channels db-spec)
+   (response)))
 
-;; (defn create [request]
-;;   (->> request
-;;        (validate-channel)
-;;        (create-channel db-spec)))
+(defn create [channel]
+  (->> channel
+       ;; (validate-channel)
+       (mapper/create-channel db-spec)
+       (response)))
+
+(defn delete [id]
+  (->> id
+       (mapper/delete-channel db-spec)
+       (response)))

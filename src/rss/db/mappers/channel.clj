@@ -5,9 +5,6 @@
             [clojure.core :as c])
   (:require [rss.db.config :refer [db-spec]]))
 
-
-;; (require '[clojure.java.jdbc :as jdbc])
-
 (defn get-channels-sql []
   (-> (h/select [:*])
       (h/from :channels)
@@ -22,11 +19,19 @@
       (sql/format)))
 
 (defn create-channel [db-spec channel]
-  (jdbc/execute! db-spec (create-channel-sql channel)))
+  (jdbc/execute! db-spec (create-channel-sql channel) { :return-keys true }))
 
-;; (def channel {:name "test" :description "desc" :link "link" :status "new" })
+(defn delete-channel-sql [id]
+  (-> (h/delete-from :channels)
+      (h/where [:= :id id ])
+      (sql/format)))
 
-;; (get-channels-sql)
-;; (get-channels config/db-spec)
-;; (create-channel-sql channel)
-;; (create-channel config/db-spec channel)
+(defn delete-channel [db-spec id]
+  (jdbc/execute! db-spec (delete-channel-sql id)))
+
+(defn delete-all-sql []
+  (-> (h/delete-from :channels)
+      (sql/format)))
+
+(defn delete-all [db-spec]
+  (jdbc/execute! db-spec (delete-all-sql)))

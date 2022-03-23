@@ -1,10 +1,10 @@
-(ns rss.db.migrations)
-(require '[ragtime.jdbc :as jdbc]
-         '[ragtime.repl :as repl])
-(require '[rss.db.config :as config])
+(ns rss.db.migrations
+  (:require [ragtime.jdbc :as jdbc]
+            [ragtime.repl :as repl])
+  (:require [rss.db.config :as config]))
 
 (def migration-config
-  {:datastore  (jdbc/sql-database config/pg-db)
+  {:datastore  (jdbc/sql-database config/db-spec)
    :migrations (jdbc/load-resources "migrations")})
 
 (defn migrate []

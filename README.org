@@ -1,0 +1,19 @@
+* Clojure project
+
+** REST API
+- get channels
+#+begin_src sh
+curl http://localhost:3000/channels
+#+end_src
+
+- add channel
+#+begin_src sh
+curl -X POST http://localhost:3000/channels \
+   -H 'Content-Type: application/json' \
+   -d '{"channel": {"name": "ch1", "description": "desc1"}}'
+#+end_src
+
+- delete channel
+#+begin_src sh
+curl -X DELETE http://localhost:3000/channels/:id
+#+end_src

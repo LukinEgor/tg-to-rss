@@ -1,8 +1,8 @@
-(ns rss.db.config)
-  ;; (require [environ.core :refer [env]]))
+(ns rss.db.config
+  (:require [environ.core :refer [env]]))
 
 (def db-spec {:dbtype "postgresql"
-            :dbname "rss_dev"
-            :host "db"
-            :user "postgres"
-            :password "" })
+              :dbname (env :db-name)
+              :host (env :db-host)
+              :user (env :db-user)
+              :password (env :db-password)})
