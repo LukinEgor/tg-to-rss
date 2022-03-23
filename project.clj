@@ -10,6 +10,7 @@
                  [ring/ring-devel "1.6.3"]
                  [org.clojure/java.jdbc "0.7.12"]
                  [ring/ring-mock "0.4.0"]
+                 [ring/ring-json "0.5.1"]
                  [org.clojure/clojurescript "1.10.758"]
                  [reagent "1.1.0"]
                  [environ "1.2.0"]
