@@ -8,7 +8,7 @@
 
 (defroutes main-routes
   (GET "/" [] "<h1>Hello World compojure</h1>")
-  (GET "/channels" [] channels/index)
+  (GET "/channels" [] (channels/index))
   (POST "/channels" [:as { { channel :channel } :body }] (channels/create channel))
   (DELETE "/channels/:id" [id :<< as-int] (channels/delete id))
   (route/not-found "<h1>Page not found</h1>"))

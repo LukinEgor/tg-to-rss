@@ -13,13 +13,6 @@
 (defn get-channels [db-spec]
   (jdbc/query db-spec (get-channels-sql)))
 
-(defn delete-all-sql []
-  (-> (h/delete-from :channels)
-      (sql/format)))
-
-(defn delete-all [db-spec]
-  (jdbc/execute! db-spec (delete-all-sql)))
-
 (defn create-channel-sql [channel]
   (-> (h/insert-into :channels)
       (h/values [channel])
@@ -33,7 +26,12 @@
       (h/where [:= :id id ])
       (sql/format)))
 
-;; (delete-channel-sql 4)
-
 (defn delete-channel [db-spec id]
   (jdbc/execute! db-spec (delete-channel-sql id)))
+
+(defn delete-all-sql []
+  (-> (h/delete-from :channels)
+      (sql/format)))
+
+(defn delete-all [db-spec]
+  (jdbc/execute! db-spec (delete-all-sql)))

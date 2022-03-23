@@ -3,11 +3,10 @@
   (:require [ring.util.response :refer [response]])
   (:require [rss.db.mappers.channel :as mapper]))
 
-(defn index [channel]
-  (mapper/get-channels db-spec))
-
-;; (defn create [channel]
-;;   (mapper/create-channel db-spec channel))
+(defn index []
+  (->
+   (mapper/get-channels db-spec)
+   (response)))
 
 (defn create [channel]
   (->> channel
