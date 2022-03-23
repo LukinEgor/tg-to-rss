@@ -9,7 +9,6 @@
   (db/delete-all db-spec)
   (f))
 
-;; (use-fixtures :once setup-db)
 (use-fixtures :each clear-db)
 
 (def test-channel {:name "test" :description "desc" :link "link" })

@@ -5,8 +5,9 @@ x-app-volumes: &app-volumes
   - ~/.bash_history:/root/.bash_history
 
 x-app-environment: &app-environment
-  - POSTGRES_HOST=db
-  - POSTGRES_USER=postgres
+  - DB_HOST=db
+  - DB_NAME=rss_dev
+  - DB_USER=postgres
 
 services:
   app:
