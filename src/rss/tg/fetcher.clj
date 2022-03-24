@@ -1,13 +1,25 @@
-(ns rss.tg.sync
+(ns rss.tg.fetcher
   (:use pl.danieljanus.tagsoup))
 
+;; (fetch-new-posts "addmeto" 4789)
 ;; (find-last-post "addmeto")
-;; (find-post-by-id "addmeto" 4789)
+;; (fetch-post-by-id "addmeto" 4789)
 
 (def tg-url "https://t.me")
 (def intro-post-id 0)
 (def started-post-id 100000)
 (def meta-content-property "twitter:description")
+
+(defn fetch-new-posts [channel last-post-id]
+  (let [intro (fetch-post-by-id channel intro-post-id)]
+    (fetch-new-posts-iter channel intro (+ last-post-id 1) [])))
+
+; TODO refactoring
+(defn fetch-new-posts-iter [channel intro last-post-id posts]
+  (let [post (fetch-post-by-id channel last-post-id)]
+    (if (= post intro)
+      posts
+      (fetch-new-posts-iter channel intro (+ last-post-id 1) (conj posts { :id last-post-id :content post })))))
 
 (defn find-last-post [channel]
   (let [intro (fetch-post-by-id channel intro-post-id)]
@@ -15,6 +27,20 @@
                          intro
                          (/ started-post-id 2)
                          started-post-id)))
+
+; refactoring
+(defn find-last-post-iter [channel intro step guess-id]
+  (let [current-post (fetch-post-by-id channel guess-id)
+        next-post (fetch-post-by-id channel (+ guess-id 1))
+        next-post-2 (fetch-post-by-id channel (+ guess-id 2))]
+    (if (or
+         (last-post? current-post next-post next-post-2 intro)
+         (and (= step 1.0) (not (= current-post intro))))
+      { :id guess-id :content current-post }
+      (find-last-post-iter channel
+                              intro
+                              (Math/ceil (/ step 2))
+                              (next-guess-id guess-id step intro current-post)))))
 
 (defn fetch-post-by-id [channel post-id]
   (->>
@@ -24,21 +50,6 @@
    (filter twitter-meta-header?)
    (first)
    (extract-content)))
-
-; refactoring
-(defn find-last-post-iter [channel intro step guess-id]
-  (let [current-post (fetch-post-by-id channel guess-id)
-        next-post (fetch-post-by-id channel (+ guess-id 1))
-        next-post-2 (fetch-post-by-id channel (+ guess-id 2))]
-    (println step "-" guess-id)
-    (if (or
-         (last-post? current-post next-post next-post-2 intro)
-         (and (= step 1.0) (not (= current-post intro))))
-      { :id guess-id :content current-post }
-      (find-last-post-iter channel
-                              intro
-                              (Math/ceil (/ step 2))
-                              (next-guess-id guess-id step intro current-post)))))
 
 (defn take-headers [html] (nth html 2))
 
@@ -55,5 +66,6 @@
     (- guess-id step)
     (+ guess-id step)))
 
+; FIXME rename vars
 (defn last-post? [current next next2 intro]
   (and (not (= current next)) (= next intro) (= next2 intro)))

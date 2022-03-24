@@ -1,0 +1,8 @@
+{:up   ["ALTER TABLE channels
+ALTER COLUMN name TYPE VARCHAR,
+ALTER COLUMN description TYPE VARCHAR,
+ALTER COLUMN link TYPE VARCHAR;"]
+ :down ["ALTER TABLE channels
+ALTER COLUMN name TYPE char(12),
+ALTER COLUMN description TYPE char(20),
+ALTER COLUMN link TYPE char(20);"]}

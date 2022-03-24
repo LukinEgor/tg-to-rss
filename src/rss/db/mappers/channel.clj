@@ -5,13 +5,15 @@
             [clojure.core :as c])
   (:require [rss.db.config :refer [db-spec]]))
 
-(defn get-channels-sql []
+(defn get-channels-sql [pred]
   (-> (h/select [:*])
       (h/from :channels)
+      (h/where pred)
       (sql/format)))
 
-(defn get-channels [db-spec]
-  (jdbc/query db-spec (get-channels-sql)))
+(defn get-channels
+  ([db-spec] (get-channels db-spec []))
+  ([db-spec pred] (jdbc/query db-spec (get-channels-sql pred))))
 
 (defn create-channel-sql [channel]
   (-> (h/insert-into :channels)
@@ -20,6 +22,29 @@
 
 (defn create-channel [db-spec channel]
   (jdbc/execute! db-spec (create-channel-sql channel) { :return-keys true }))
+
+; update channels set last_post_id=tmp.last_post_id from (values (1,'new1'),(2,'new2'),(6,'new6')) as tmp (id,last_post_id) where channels.id=tmp.id;
+
+(sql/format {:with [[[:temp {:columns [:id :description :last_post_id]}]
+                     {:values [[1 "Sean" 0] [2 "Jay" 0]]}]]
+             :update :channels
+             ;; :set [:= :temp.description :channels.description]
+             :set { :temp.* [:channels.*] }
+             :where [:= :temp.id :channels.id]
+             })
+
+(defn update-channels-sql [channels]
+  (->
+   (h/with [[:temp {:columns :id}] {:values [:id 1] }])
+   (h/update :channels)
+   (h/set [])
+   (h/from
+    (h/values [[:id 1]])
+    )
+   (h/where )
+   (sql/format)))
+
+(update-channels-sql [])
 
 (defn delete-channel-sql [id]
   (-> (h/delete-from :channels)
