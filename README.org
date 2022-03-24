@@ -17,3 +17,10 @@ curl -X POST http://localhost:3000/channels \
 #+begin_src sh
 curl -X DELETE http://localhost:3000/channels/:id
 #+end_src
+
+** Reagent frontent
+#+begin_src clojure
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(cljs-repl)
+#+end_src
