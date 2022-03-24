@@ -23,7 +23,4 @@ curl -X DELETE http://localhost:3000/channels/:id
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 (cljs-repl)
-
-(start-autobuild "main")
-(stop-autobuild "main")
 #+end_src
