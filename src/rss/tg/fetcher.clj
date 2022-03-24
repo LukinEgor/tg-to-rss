@@ -21,6 +21,11 @@
       posts
       (fetch-new-posts-iter channel intro (+ last-post-id 1) (conj posts { :id last-post-id :content post })))))
 
+(defn fetch-channel-info [channel]
+  (let [{ id :id content :content } (find-last-post channel)
+        intro (fetch-post-by-id channel intro-post-id)]
+    { :last-post-id id :last-post content :description intro }))
+
 (defn find-last-post [channel]
   (let [intro (fetch-post-by-id channel intro-post-id)]
     (find-last-post-iter channel

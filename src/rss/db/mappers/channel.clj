@@ -5,6 +5,37 @@
             [clojure.core :as c])
   (:require [rss.db.config :refer [db-spec]]))
 
+;; update channels
+;; set last_post_id=tmp.last_post_id
+;; from (values (20, 1), (21, 5)) as tmp (id,last_post_id)
+;; where channels.id=tmp.id;
+
+(defn bulk-update [values]
+  (jdbc/execute!
+   db-spec
+   (sql/format {:update :channels
+                :set {:last_post_id :temp.last_post_id }
+                :from {
+                       :values [{ :id 20 :last_post_id 9}]
+                       }
+                :where [:= :id :channels.id]
+                }))
+  )
+
+(bulk-update "a")
+
+(defn bulk-update [values]
+  (jdbc/execute! db-spec
+                 (sql/format {:with [[[:temp]
+                                      {:values [{ :id 20 :last_post_id 1 }]}]]
+                              ;; {:values values }]]
+                              :update :channels
+                              :set {:channels.last_post_id :temp.last_post_id }
+                              :where [:= :temp.id :channels.id]
+                              })))
+
+(bulk-update "test")
+
 (defn get-channels-sql [pred]
   (-> (h/select [:*])
       (h/from :channels)
