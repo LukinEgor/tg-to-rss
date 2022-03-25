@@ -38,6 +38,14 @@
 (defn delete-all [db-spec]
   (jdbc/execute! db-spec (delete-all-sql)))
 
+(defn update-statements [properties]
+  (->>
+   (keys properties)
+   (map (fn [key] (str (name key) " = ?")))
+   (clojure.string/join ", ")
+   ))
+
+; FIXME refactoring
 (defn bulk-update-channels [db-spec channels]
   (let [values (map
                 (fn [{ id :id description :description last-post-id :last-post-id }]
@@ -45,6 +53,6 @@
     (jdbc/db-do-prepared
      db-spec
      (concat
-      ["UPDATE channels SET description = ?, last_post_id = ? WHERE id = ?"]
+      (vector (str "UPDATE channels SET " (update-statements (first channels)) " WHERE id = ?"))
       values)
      { :multi? true })))
