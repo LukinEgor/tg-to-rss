@@ -56,7 +56,7 @@
   (save-channels db-spec channels)
   (save-last-posts db-spec channels))
 
-(defn download-new-channels [db-spec ]
+(defn download-new-channels [db-spec fetch-post]
   (->>
    db-spec
    (get-new-channels)
@@ -64,10 +64,11 @@
      (unless
       (empty? channels)
       (->>
-       (find-last-posts (partial fetch-post slurp) channels)
-       ;; (find-last-posts (partial fetch-post slurp) channels)
+       (find-last-posts fetch-post channels)
        (db-save db-spec))
       [])))))
+
+;; (find-last-posts (partial fetch-post slurp) channels)
 
 ;; (defn fetch-posts [channels]
 ;;   (->
