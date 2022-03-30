@@ -38,21 +38,27 @@
 (defn delete-all [db-spec]
   (jdbc/execute! db-spec (delete-all-sql)))
 
-(defn update-statements [properties]
-  (->>
-   (keys properties)
-   (map (fn [key] (str (name key) " = ?")))
-   (clojure.string/join ", ")
-   ))
+(defn- update-statements []
+  (->> ["description" "last_post_id"]
+       (map (fn [key]
+              (str key " = ?")))
+       (clojure.string/join ", ")))
 
-; FIXME refactoring
+; NOTE can I do it by honeysql?
+(defn- bulk-update-sql [channels]
+  (->>
+   (map
+    (fn [{ id :id description :description last-post-id :last-post-id }]
+      [description last-post-id id])
+    channels)
+   (concat
+    (vector
+     (str "UPDATE channels SET "
+          (update-statements)
+          " WHERE id = ?")))))
+
 (defn bulk-update-channels [db-spec channels]
-  (let [values (map
-                (fn [{ id :id description :description last-post-id :last-post-id }]
-                  [description last-post-id id]) channels)]
-    (jdbc/db-do-prepared
+  (jdbc/db-do-prepared
      db-spec
-     (concat
-      (vector (str "UPDATE channels SET " (update-statements (first channels)) " WHERE id = ?"))
-      values)
-     { :multi? true })))
+     (bulk-update-sql channels)
+     { :multi? true }))
