@@ -38,23 +38,26 @@
 (defn delete-all [db-spec]
   (jdbc/execute! db-spec (delete-all-sql)))
 
-(defn- update-statements []
-  (->> ["description" "last_post_id"]
-       (map (fn [key]
-              (str key " = ?")))
-       (clojure.string/join ", ")))
+(defn- prepare-values [channel]
+  (->> [:description :last-post-id :id]
+       (clojure.core/filter (fn [key] (contains? channel key)))
+       (map (fn [key] (key channel)))))
 
-; NOTE can I do it by honeysql?
+(defn- update-statements [channel]
+  (->> [:description :last-post-id]
+      (clojure.core/filter (fn [key] (contains? channel key)))
+      (map (fn [key]
+             (str (clojure.string/replace (name key) #"-" "_") " = ?")))
+      (clojure.string/join ", ")))
+
+; TODO refactoring (can I do it by honeysql?)
 (defn- bulk-update-sql [channels]
   (->>
-   (map
-    (fn [{ id :id description :description last-post-id :last-post-id }]
-      [description last-post-id id])
-    channels)
+   (map (fn [channel] (prepare-values channel)) channels)
    (concat
     (vector
      (str "UPDATE channels SET "
-          (update-statements)
+          (update-statements (first channels))
           " WHERE id = ?")))))
 
 (defn bulk-update-channels [db-spec channels]

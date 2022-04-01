@@ -23,12 +23,22 @@
 (deftest test-find-last-post
   (let [last-post-id (+ (rand-int 1000) 1)
         fetch-post (mock-fetch-post last-post-id)]
-    (let [{ id :id } (find-last-post fetch-post channel-name)]
+    (let [{ id :last-post-id } (find-last-post fetch-post channel-name)]
       (is (= id last-post-id)))))
 
+;; (deftest test-fetch-new-posts
+;;   (let [last-post-id (+ (rand-int 1000) 1)
+;;         new-posts-count (rand-int 10)
+;;         fetch-post (mock-fetch-post (+ last-post-id new-posts-count))]
+;;     (let [posts (fetch-new-posts fetch-post channel-name test-cover-post last-post-id)]
+;;       (is (= (count posts) new-posts-count)))))
+
+;; (def fetch-post (mock-fetch-post 2))
+;; (fetch-new-posts fetch-post channel-name test-cover-post last-post-id)
+
 (deftest test-fetch-new-posts
-  (let [last-post-id (+ (rand-int 1000) 1)
-        new-posts-count (rand-int 10)
+  (let [last-post-id 1
+        new-posts-count 1
         fetch-post (mock-fetch-post (+ last-post-id new-posts-count))]
     (let [posts (fetch-new-posts fetch-post channel-name test-cover-post last-post-id)]
       (is (= (count posts) new-posts-count)))))

@@ -7,20 +7,6 @@
    [rss.db.mappers.channel :as channels-mapper]
    [rss.db.mappers.posts :as posts-mapper]))
 
-(defn take-last-post-id [posts]
-  (-> posts
-      (sort)
-      (first)
-      (:tg-id)))
-
-(defn extract-last-post-ids [posts]
-  (->> posts
-      (group-by :channel-id)
-      (map
-       (fn
-         [[id posts]]
-         {:id id :last-post-id (take-last-post-id posts) }))))
-
 (defn get-new-channels [db-spec]
   (channels-mapper/get-channels db-spec [:= :last_post_id nil]))
 
@@ -68,40 +54,41 @@
        (db-save db-spec))
       [])))))
 
-;; (find-last-posts (partial fetch-post slurp) channels)
+(defn take-last-post-id [posts]
+  (->> posts
+      (sort-by :last-post-id)
+      (last)
+      (:tg-id)))
 
-;; (defn fetch-posts [channels]
-;;   (->
-;;    (map
-;;     (fn [{ name :name last-post-id :last_post_id channel-id :id }]
-;;       (let [posts (fetch-new-posts name last-post-id)]
-;;         (if (empty? posts)
-;;           []
-;;           (map
-;;            (fn [post]
-;;              (-> post
-;;                  (set/rename-keys { :id :tg-id })
-;;                  (merge { :channel-id channel-id })))
-;;            posts)))
-;;       ) channels)
-;;    (flatten)))
+(defn extract-last-post-ids [posts]
+  (->> posts
+      (group-by :channel-id)
+      (map
+       (fn
+         [[id posts]]
+         {:id id :last-post-id (take-last-post-id posts) }))))
 
-;; (defn sync-posts [db-spec]
-;;   (let [channels
-;;         (channels-mapper/get-channels db-spec [:!= :last_post_id nil])]
-;;     (let [new-posts (fetch-posts channels)]
-;;       (if (empty? new-posts)
-;;         :empty
-;;         ((posts-mapper/create db-spec new-posts)
-;;          (channels-mapper/bulk-update-channels db-spec (extract-last-post-ids new-posts)))))))
+(defn sync-posts [db-spec fetch-post]
+  (->>
+   (channels-mapper/get-channels db-spec [:!= :last_post_id nil])
+   (map
+    (fn [{ name :name last-post-id :last_post_id channel-id :id cover-post :description}]
+      (let [posts (fetch-new-posts fetch-post name cover-post last-post-id)]
+        (if (empty? posts)
+          []
+          (map
+           (fn [post]
+             (-> post
+                 (set/rename-keys { :id :tg-id })
+                 (merge { :channel-id channel-id })))
+           posts)))))
+   (flatten)
+   ((fn [new-posts]
+      (when (not (empty? new-posts))
+        (posts-mapper/create db-spec new-posts)
+        (channels-mapper/bulk-update-channels db-spec (extract-last-post-ids new-posts)))))))
 
-
-;; MOVE to main layer
-;; (defn fetch-channel-info [fetch channel]
-;;   "Fetch telegram channel info - last-post-id
-;; Arguments:
-;; - function that return a html
-;; - string"
-;;   (let [{ id :id content :content } (find-last-post channel fetch)
-;;         intro (fetch-post-by-id channel cover-post-id fetch)]
-;;     { :last-post-id id :last-post content :description intro }))
+(defn execute []
+  (let [fetch-post (partial fetch-post slurp)]
+    (download-new-channels db-spec fetch-post)
+    (sync-posts db-spec fetch-post)))

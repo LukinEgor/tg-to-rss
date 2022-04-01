@@ -72,16 +72,21 @@
 
 ;; TODO refactoring
 (defn- fetch-new-posts-iter
-  [fetch-post channel cover-post post-id posts]
+  [fetch-post channel cover-post post-id last-post-id posts]
   (let [current-post (fetch-post channel post-id)
         first-next (fetch-post channel (+ post-id 1))
         second-next (fetch-post channel (+ post-id 2))]
-    (if (last-post? current-post first-next second-next cover-post)
-      (conj posts { :id post-id :content current-post })
+    (if (or
+         (last-post? current-post first-next second-next cover-post)
+         (= (+ last-post-id 20) post-id))
+      (if (= post-id last-post-id)
+        []
+        (conj posts { :id post-id :content current-post }))
       (fetch-new-posts-iter fetch-post
                             channel
                             cover-post
                             (+ post-id 1)
+                            last-post-id
                             (conj posts { :id post-id :content current-post })))))
 
 (defn fetch-new-posts
@@ -89,5 +94,6 @@
   (fetch-new-posts-iter fetch-post
                         channel
                         cover-post
-                        (+ last-post-id 1)
+                        last-post-id
+                        last-post-id
                         []))
