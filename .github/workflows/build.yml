@@ -2,7 +2,7 @@ name: Create and publish images
 
 on:
   push:
-    branches: ['master']
+    branches: ['feature/setup-ci']
 
 env:
   REGISTRY: ghcr.io
