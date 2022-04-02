@@ -1,9 +1,4 @@
-# Dockerfile from https://hub.docker.com/_/clojure
-# TODO pin version
 FROM clojure:openjdk-8-lein-2.9.8-buster
-# FROM clojure:openjdk-17-slim-bullseye
-# FROM clojure:openjdk-18-tools-deps-slim-buster
-# FROM clojure:1.10.3
 
 RUN mkdir -p /usr/src/app
 
