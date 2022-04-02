@@ -88,7 +88,7 @@
         (posts-mapper/create db-spec new-posts)
         (channels-mapper/bulk-update-channels db-spec (extract-last-post-ids new-posts)))))))
 
-(defn execute []
+(defn sync []
   (let [fetch-post (partial fetch-post slurp)]
     (download-new-channels db-spec fetch-post)
     (sync-posts db-spec fetch-post)))
