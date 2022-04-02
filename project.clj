@@ -11,6 +11,8 @@
                  [ring/ring-mock "0.4.0"]
                  [ring/ring-json "0.5.1"]
                  [org.clojure/clojurescript "1.10.758"]
+                 [clj-tagsoup/clj-tagsoup "0.3.0" :exclusions [org.clojure/clojure]]
+                 [org.clojure/data.xml "0.0.8"]
                  [reagent "1.1.0"]
                  [environ "1.2.0"]
                  [figwheel-sidecar "0.5.16"]
@@ -21,23 +23,34 @@
                  [cljsjs/react-dom "17.0.2-0"]
                  [cljs-http "0.1.46"]
                  [dev.weavejester/ragtime "0.9.1"]]
-  :ring { :handler rss.api.server/app :open-browser? false }
+  :profiles {
+             :api {
+                   :plugins [[lein-ring "0.12.5"]]
+                   :ring { :handler rss.api.server/app :open-browser? false }
+                   }
+             :cli  {
+                    :dependencies [[org.clojure/tools.cli "1.0.206"]]
+
+                    :plugins [[lein-binplus "0.6.6"]]
+
+                    :main rss.cli.main
+                    }
+             }
+  ;; :aot [rss.tg.main]
+  :target-path "target/%s/"
   :plugins [[lein-ring "0.12.5"]
             [lein-cljsbuild "1.1.8"]
             [lein-figwheel "0.5.18"]]
-  ;; :figwheel {
-  ;;            :http-server-root "public" ;; this will be in resources/
-  ;;            :server-port 5309          ;; default is 3449
-  ;;            :server-ip   "0.0.0.0"
-  ;;            }
+  :figwheel {
+             :http-server-root "public" ;; this will be in resources/
+             :server-port 5309          ;; default is 3449
+             :server-ip   "0.0.0.0"
+             }
   :cljsbuild {
               :builds [{
                         :id "main"
                         :source-paths ["src"]
-                        ;; :figwheel true
-                        ;; put client config options in :figwheel
-                        :figwheel { :websocket-host "localhost"
-                                   :on-jsload "example.core/fig-reload"}
+                        :figwheel true
                         :compiler {
                                    :main "rss.web.app"
                                    :asset-path "js/out"

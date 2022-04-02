@@ -1,0 +1,2 @@
+{:up   ["ALTER TABLE posts ADD COLUMN tg_id INTEGER;"]
+ :down ["ALTER TABLE posts REMOVE COLUMN tg_id;"]}

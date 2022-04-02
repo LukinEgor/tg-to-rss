@@ -31,17 +31,13 @@
         )))
 
 (defn handle-create-channel-button-click []
-  (let [name (.-value (js/document.getElementById "name"))
-        desc (.-value (js/document.getElementById "desc"))
-        link (.-value (js/document.getElementById "link"))]
-    (create-channel { :name name :description desc :link link })))
+  (let [name (.-value (js/document.getElementById "name"))]
+    (create-channel { :name name  })))
 
 (defn create-channel-component []
   [:div
    [:div "Add channel"]
    [:input { :id "name" }]
-   [:input { :id "desc" }]
-   [:input { :id "link" }]
    [:input {:type "button" :value "Create"
             :on-click #(handle-create-channel-button-click)}]])
 
@@ -58,10 +54,10 @@
 
 (defn channel-component [channel]
   [:div
-   [:div "Channel:" (:name channel) (:description channel)]
+   [:div "Channel:" (:name channel)]
+   [:div "Description:" (:description channel)]
    [:input {:type "button" :value "delete"
             :on-click #(delete-channel (:id channel))}]])
-
 
 (defn render []
   (rdom/render
