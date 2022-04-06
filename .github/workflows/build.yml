@@ -36,10 +36,8 @@ jobs:
       #       type=sha
 
       - name: test1
-        run: printenv; echo ${{ env.GITHUB_SHA }}; echo ${{ GITHUB_SHA }}
-
-      - name: test2
-        run: echo {{  }}
+        run: printenv; echo ${{ env.GITHUB_SHA }};
+        # run: printenv; echo ${{ env.GITHUB_SHA }}; echo ${{ GITHUB_SHA }}
 
       - name: Build and push api
         uses: docker/build-push-action@v2
