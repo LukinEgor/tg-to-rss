@@ -12,10 +12,11 @@ env:
 
 jobs:
   test-image:
-    runs-on: ${{ env.REGISTRY }}/lukinegor/tg-to-rss:${{ github.sha }}
+    # runs-on: ${{ env.REGISTRY }}/lukinegor/tg-to-rss:${{ github.sha }}
+    runs-on: ${{ env.REGISTRY }}/lukinegor/tg-to-rss:aea27bacbd46fbda3e5abcb3198783e1515f7896
     permissions:
-      contents: read
-      packages: write
+      # contents: read
+      # packages: write
 
     steps:
       - name: Run tests
