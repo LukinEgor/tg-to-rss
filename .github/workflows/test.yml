@@ -22,4 +22,6 @@ jobs:
 
     steps:
       - name: Run tests
-        run: lein test
+        shell: |
+          cd /usr/src/app
+          lein test
