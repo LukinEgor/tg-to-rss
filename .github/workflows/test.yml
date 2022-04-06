@@ -15,7 +15,7 @@ env:
 jobs:
   test-image:
     # runs-on: ${{ env.REGISTRY }}/lukinegor/tg-to-rss:${{ github.sha }}
-    runs-on: ghcr.io/lukinegor/tg-to-rss:aea27bacbd46fbda3e5abcb3198783e1515f7896
+    container: ghcr.io/lukinegor/tg-to-rss:aea27bacbd46fbda3e5abcb3198783e1515f7896
     # permissions:
       # contents: read
       # packages: write
