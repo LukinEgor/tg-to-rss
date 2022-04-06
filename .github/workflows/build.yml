@@ -27,18 +27,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Extract metadata (tags, labels) for Docker
-      #   id: meta-api
-      #   uses: docker/metadata-action@v3
-      #   with:
-      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      #     tags: |
-      #       type=sha
-
-      # - name: test1
-      #   run: printenv; echo ${{ env.GITHUB_SHA }};
-        # run: printenv; echo ${{ env.GITHUB_SHA }}; echo ${{ GITHUB_SHA }}
-
       - name: Build and push api
         uses: docker/build-push-action@v2
         with:
