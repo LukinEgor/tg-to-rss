@@ -35,8 +35,8 @@ jobs:
       #     tags: |
       #       type=sha
 
-      - name: test1
-        run: printenv; echo ${{ env.GITHUB_SHA }};
+      # - name: test1
+      #   run: printenv; echo ${{ env.GITHUB_SHA }};
         # run: printenv; echo ${{ env.GITHUB_SHA }}; echo ${{ GITHUB_SHA }}
 
       - name: Build and push api
@@ -45,5 +45,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags:
-            - ${{ env.GITHUB_SHA }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.GITHUB_SHA }}
