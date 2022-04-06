@@ -22,4 +22,4 @@ jobs:
 
     steps:
       - name: Run tests
-        run: lein tests
+        run: lein test
