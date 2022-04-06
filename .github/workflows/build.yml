@@ -35,4 +35,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/tg-to-rss:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/lukinegor/tg-to-rss:${{ github.sha }}
