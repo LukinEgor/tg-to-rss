@@ -3,15 +3,15 @@
             [ragtime.repl :as repl])
   (:require [rss.db.config :as config]))
 
-(def migration-config
+(defn load-config []
   {:datastore  (jdbc/sql-database config/db-spec)
    :migrations (jdbc/load-resources "migrations")})
 
+(defn test []
+  (println "hello world"))
+
 (defn migrate []
-  (repl/migrate (migration-config)))
+  (repl/migrate (load-config)))
 
 (defn rollback []
-  (repl/rollback (migration-config)))
-
-;; (repl/migrate migration-config)
-;; (repl/rollback migration-config)
+  (repl/rollback (load-config)))
