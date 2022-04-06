@@ -1,0 +1,22 @@
+name: Create and publish images
+
+on:
+  workflow_run:
+    workflows: ["Build images"]
+    types:
+      - completed
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test-image:
+    runs-on: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.GITHUB_SHA }}
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Run tests
+        run: lein tests
