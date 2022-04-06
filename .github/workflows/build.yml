@@ -45,4 +45,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/tg-to-rss:${{ github.sha }}
