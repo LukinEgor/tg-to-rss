@@ -16,8 +16,8 @@ env:
 jobs:
   test-image:
     runs-on: ubuntu-latest
-    # container: ghcr.io/lukinegor/tg-to-rss:${{ github.sha }}
-    container: ghcr.io/lukinegor/tg-to-rss:a7c1f17491f2f88c4efa194fc6e890201a7cef0e
+    container: ghcr.io/lukinegor/tg-to-rss:${{ github.sha }}
+    # container: ghcr.io/lukinegor/tg-to-rss:a7c1f17491f2f88c4efa194fc6e890201a7cef0e
     permissions:
       contents: read
       packages: write
@@ -33,7 +33,17 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Run tests
+      - name: Create db
+        run: |
+          cd /usr/src/app
+
+          DB_HOST=postgres \
+            DB_USER=postgres \
+            DB_PASSWORD=postgres \
+           DB_NAME=rss_test \
+            lein run -m rss.db.migrations/create-db
+
+      - name: Run migrations
         run: |
           cd /usr/src/app
 
@@ -42,6 +52,10 @@ jobs:
             DB_PASSWORD=postgres \
             DB_NAME=rss_test \
             lein run -m rss.db.migrations/migrate
+
+      - name: Run tests
+        run: |
+          cd /usr/src/app
 
           DB_HOST=postgres \
             DB_USER=postgres \
