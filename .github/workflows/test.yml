@@ -1,12 +1,12 @@
 name: Test Image
 
-on: push
+# on: push
 
-# on:
-#   workflow_run:
-#     workflows: ["Build Image"]
-#     types:
-#       - completed
+on:
+  workflow_run:
+    workflows: ["Build Image"]
+    types:
+      - completed
 
 env:
   REGISTRY: ghcr.io
@@ -15,7 +15,7 @@ env:
 jobs:
   test-image:
     runs-on: ubuntu-latest
-    container: ghcr.io/lukinegor/tg-to-rss:aea27bacbd46fbda3e5abcb3198783e1515f7896
+    container: ghcr.io/lukinegor/tg-to-rss:${{ github.sha }}
     # permissions:
       # contents: read
       # packages: write
@@ -29,7 +29,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
 
     steps:
       - name: Run tests
