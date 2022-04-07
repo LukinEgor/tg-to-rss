@@ -5,8 +5,10 @@ name: Test Image
 on:
  workflow_run:
     workflows: [Build]
-    # types:
-    #   - completed
+    branches: [feature/setup-ci]
+    types:
+      - completed
+      - requested
 
 env:
   REGISTRY: ghcr.io
