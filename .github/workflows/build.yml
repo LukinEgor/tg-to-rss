@@ -17,41 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-  test-image:
-    runs-on: ubuntu-latest
-    # container: ghcr.io/lukinegor/tg-to-rss:${{ github.sha }}
-    container: ghcr.io/lukinegor/tg-to-rss:a7c1f17491f2f88c4efa194fc6e890201a7cef0e
-    permissions:
-      contents: read
-      packages: write
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-      - name: Run tests
-        run: |
-          cd /usr/src/app
-
-          DB_HOST=postgres \
-            DB_USER=postgres \
-            DB_PASSWORD=postgres \
-            DB_NAME=rss_test \
-            lein run -m rss.db.migrations/migrate
-
-          DB_HOST=postgres \
-            DB_USER=postgres \
-            DB_PASSWORD=postgres \
-            DB_NAME=rss_test \
-            lein test
-
       # - name: Set up Docker Buildx
       #   uses: docker/setup-buildx-action@v1
       #   with:
@@ -71,3 +36,53 @@ jobs:
       #     file: ./Dockerfile
       #     push: true
       #     tags: ${{ env.REGISTRY }}/lukinegor/tg-to-rss:${{ github.sha }}
+
+
+  test-image:
+    runs-on: ubuntu-latest
+    # container: ghcr.io/lukinegor/tg-to-rss:${{ github.sha }}
+    container: ghcr.io/lukinegor/tg-to-rss:a7c1f17491f2f88c4efa194fc6e890201a7cef0e
+    permissions:
+      contents: read
+      packages: write
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Create db
+        run: |
+          cd /usr/src/app
+
+          DB_HOST=postgres \
+            DB_USER=postgres \
+            DB_PASSWORD=postgres \
+           DB_NAME=rss_test \
+            lein run -m rss.db.migrations/create-db
+
+      - name: Run migrations
+        run: |
+          cd /usr/src/app
+
+          DB_HOST=postgres \
+            DB_USER=postgres \
+            DB_PASSWORD=postgres \
+            DB_NAME=rss_test \
+            lein run -m rss.db.migrations/migrate
+
+      - name: Run tests
+        run: |
+          cd /usr/src/app
+
+          DB_HOST=postgres \
+            DB_USER=postgres \
+            DB_PASSWORD=postgres \
+            DB_NAME=rss_test \
+            lein test
