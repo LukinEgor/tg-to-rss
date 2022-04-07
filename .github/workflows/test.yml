@@ -1,14 +1,11 @@
-name: Test Image
+name: Test
 
 # on: push
 
 on:
  workflow_run:
     workflows: [Build]
-    branches: [feature/setup-ci]
-    types:
-      - completed
-      - requested
+    types: [completed]
 
 env:
   REGISTRY: ghcr.io
