@@ -1,9 +1,8 @@
 name: Test
 
-# on: push
-
 on:
   workflow_dispatch:
+# TODO why doesn't it work in branch?
   # workflow_run:
   #   workflows: [Build]
   #   types: [completed]
@@ -16,7 +15,6 @@ jobs:
   test-image:
     runs-on: ubuntu-latest
     container: ghcr.io/lukinegor/tg-to-rss:${{ github.sha }}
-    # container: ghcr.io/lukinegor/tg-to-rss:a7c1f17491f2f88c4efa194fc6e890201a7cef0e
     permissions:
       contents: read
       packages: write
