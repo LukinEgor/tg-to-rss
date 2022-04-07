@@ -1,17 +1,22 @@
 (ns rss.db.migrations
   (:require [ragtime.jdbc :as jdbc]
-            [ragtime.repl :as repl])
-  (:require [rss.db.config :as config]))
+            [ragtime.repl :as repl]
+            [clojure.java.jdbc]
+            [rss.db.config :as config]))
 
-(def migration-config
+(defn load-config []
   {:datastore  (jdbc/sql-database config/db-spec)
    :migrations (jdbc/load-resources "migrations")})
 
 (defn migrate []
-  (repl/migrate (migration-config)))
+  (repl/migrate (load-config)))
 
 (defn rollback []
-  (repl/rollback (migration-config)))
+  (repl/rollback (load-config)))
 
-;; (repl/migrate migration-config)
-;; (repl/rollback migration-config)
+(defn create-db []
+  (->>
+   (str
+    "CREATE DATABASE "
+    (:dbname config/db-spec))
+    (clojure.java.jdbc/query config/db-spec)))

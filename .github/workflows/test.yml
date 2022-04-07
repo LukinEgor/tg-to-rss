@@ -1,0 +1,61 @@
+name: Test
+
+on:
+  workflow_dispatch:
+# TODO why doesn't it work in branch?
+  # workflow_run:
+  #   workflows: [Build]
+  #   types: [completed]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test-image:
+    runs-on: ubuntu-latest
+    container: ghcr.io/lukinegor/tg-to-rss:${{ github.sha }}
+    permissions:
+      contents: read
+      packages: write
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Create db
+        run: |
+          cd /usr/src/app
+
+          DB_HOST=postgres \
+            DB_USER=postgres \
+            DB_PASSWORD=postgres \
+           DB_NAME=rss_test \
+            lein run -m rss.db.migrations/create-db
+
+      - name: Run migrations
+        run: |
+          cd /usr/src/app
+
+          DB_HOST=postgres \
+            DB_USER=postgres \
+            DB_PASSWORD=postgres \
+            DB_NAME=rss_test \
+            lein run -m rss.db.migrations/migrate
+
+      - name: Run tests
+        run: |
+          cd /usr/src/app
+
+          DB_HOST=postgres \
+            DB_USER=postgres \
+            DB_PASSWORD=postgres \
+            DB_NAME=rss_test \
+            lein test
