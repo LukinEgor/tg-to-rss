@@ -3,8 +3,8 @@ name: Test Image
 # on: push
 
 on:
-  workflow_run:
-    workflows: ["Build Image"]
+ workflow_run:
+    workflows: [Build Image]
     types:
       - completed
 
