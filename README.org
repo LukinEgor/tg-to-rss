@@ -24,3 +24,20 @@ curl -X DELETE http://localhost:3000/channels/:id
 (start-figwheel!)
 (cljs-repl)
 #+end_src
+
+** Infrastructure
+*** Helm commands
+- check diff
+#+begin_src sh
+helm diff upgrade --install \
+  --values values.yaml \
+  -n ttr ttr .
+#+end_src
+
+- deploy
+#+begin_src sh
+helm upgrade --install \
+  --create-namespace \
+  --values values.yaml \
+  -n ttr ttr .
+#+end_src

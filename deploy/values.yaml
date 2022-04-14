@@ -10,5 +10,5 @@ postgresql:
     enabled: true
 
 image: ghcr.io/lukinegor/tg-to-rss
-version: 873e45b8fffeecc9ff80720d3b6c0b8fa606e1d9
+version: 9c43a20634c502945c11727effccb8c8f7c038b3
 port: 3000

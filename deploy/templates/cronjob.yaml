@@ -12,7 +12,10 @@ spec:
           containers:
           - name: ttr-sync
             image: {{ .Values.image }}:{{ .Values.version }}
-            command: ["/usr/src/app/ttr-cli"]
+            command:
+            - /bin/sh
+            - -c
+            - ttr-cli
             env:
             - name: DB_HOST
               value: ttr-postgresql-headless
