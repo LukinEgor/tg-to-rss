@@ -11,7 +11,7 @@ COPY . /usr/src/app
 
 # TODO move to separate profile
 RUN lein cljsbuild once
-RUN lein with-profile cli bin
+RUN lein with-profile cli bin && mv target/cli/*-SNAPSHOT /usr/local/bin/ttr-cli
 RUN mv "$(lein with-profile api ring uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" server.jar
 
 CMD ["java", "-jar", "server.jar"]

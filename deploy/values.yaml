@@ -1,0 +1,14 @@
+replicaCount: 1
+
+service:
+  name: ttr
+
+postgresql:
+  local: true
+  postgresqlPassword: qwerty
+  volumePermissions:
+    enabled: true
+
+image: ghcr.io/lukinegor/tg-to-rss
+version: 9c43a20634c502945c11727effccb8c8f7c038b3
+port: 3000
