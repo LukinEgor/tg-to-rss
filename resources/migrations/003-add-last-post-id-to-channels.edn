@@ -1,2 +1,0 @@
-{:up   ["ALTER TABLE channels ADD COLUMN last_post_id INTEGER;"]
- :down ["ALTER TABLE channels REMOVE COLUMN last_post_id;"]}

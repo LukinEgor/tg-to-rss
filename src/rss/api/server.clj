@@ -8,10 +8,12 @@
             [compojure.route :as route]))
 
 (defroutes main-routes
+  ;; (GET "/sources" [] (sources/get))
+  ;; (POST "/sources" [] (sources/post))
   (GET "/channels" [] (channels/index))
   (POST "/channels" [:as { { channel :channel } :body }] (channels/create channel))
   (DELETE "/channels/:id" [id :<< as-int] (channels/delete id))
-  (GET "/rss/channels/:id" [id :<< as-int] (rss-channels/show id))
+  ;; (GET "/rss/channels/:id" [id :<< as-int] (rss-channels/show id))
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 
