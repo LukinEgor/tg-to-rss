@@ -1,7 +1,7 @@
 (ns rss.api.channels
-  (:require [rss.db.config :refer [db-spec]])
-  (:require [ring.util.response :refer [response]])
-  (:require [rss.db.mappers.channel :as mapper]))
+  (:require [rss.db.config :refer [db-spec]]
+            [ring.util.response :refer [response]]
+            [rss.db.mappers.channel :as mapper]))
 
 (defn index []
   (->
